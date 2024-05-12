@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misu's connects</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: violet; /* Cambia aquí a morado */
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+
+        }
+
+        .card {
+            margin: 10px;
+            cursor: pointer; /* Agregado para que el cursor sea un puntero al pasar sobre la imagen */
+        }
+
+        .word-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .word {
+            padding: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            color: black;
+            background-color: pink;
+        }
+
+        .selected {
+            border: 2px solid maroon; /* Estilo de resaltado */
+        }
+
+        #congrats-message {
+            display: none;
+            font-size: 18px;
+            color: blackn;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Misu's connects 🦥🥰</h1>
+    <div class="container" id="game-container"></div>
+    <div class="word-container" id="word-container">
+        <div class="word" data-word="Marie Curie" onclick="handleSelection('Marie Curie')">Marie Curie</div>
+        <div class="word" data-word="Dmitri Mendeléyev" onclick="handleSelection('Dmitri Mendeléyev')">Dmitri Mendeléyev</div>
+        <div class="word" data-word="Linus Pauling" onclick="handleSelection('Linus Pauling')">Linus Pauling</div>
+        <div class="word" data-word="Robert Boyle" onclick="handleSelection('Robert Boyle')">Robert Boyle</div>
+        <div class="word" data-word="Antoine Lavoisier" onclick="handleSelection('Antoine Lavoisier')">Antoine Lavoisier</div>
+
+    <p id="congrats-message">¡Enhorabuena has completado el juego!🎁. En el borde del río, bajo el sol y la sombra,
+Un arco de piedra se erige con majestuosidad.
+Allí donde el agua canta su melodía,
+Este arco es testigo de la eterna armonía.</p>
+
+    <script>
+        const imagesAndWords = [
+            { imgSrc: 'https://content.nationalgeographic.com.es/medio/2023/07/22/linus-pauling-1964_55d314df_230722102754_800x1092.jpg', word: 'Linus Pauling' },
+            { imgSrc: 'https://mujeresconciencia.com/app/uploads/2014/11/Kto8d5W.jpg', word: 'Marie Curie' },
+            { imgSrc: 'https://humanidades.com/wp-content/uploads/2019/04/Robert-Boyle-e1588640160729.jpg', word: 'Robert Boyle' },
+            { imgSrc: 'https://upload.wikimedia.org/wikipedia/commons/8/85/David_-_Portrait_of_Monsieur_Lavoisier_%28cropped%29.jpg', word: 'Antoine Lavoisier' },
+            { imgSrc: 'https://historia.nationalgeographic.com.es/medio/2022/02/02/dmitri-mendeleev-retrato-en-1890_0b793185_478x608.jpg', word: 'Dmitri Mendeléyev' }
+        ];
+
+        let selectedImage = null;
+        let selectedWord = null;
+        let correctMatches = 0;
+
+        function createCards() {
+            const container = document.getElementById('game-container');
+
+            imagesAndWords.forEach(item => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.innerHTML = `<img src="${item.imgSrc}" alt="${item.word}" width="100" height="100" onclick="handleImageSelection(this, '${item.word}')">`;
+                container.appendChild(card);
+            });
+        }
+
+        function handleImageSelection(element, word) {
+            resetSelections();
+            selectedImage = element;
+            selectedWord = word;
+            applyHighlight(selectedImage);
+        }
+
+        function handleSelection(word) {
+            if (selectedImage) {
+                selectedWord = word;
+                checkMatch();
+            } else {
+                alert('Selecciona primero una imagen.');
+            }
+        }
+
+        function resetSelections() {
+            if (selectedImage) {
+                removeHighlight(selectedImage);
+                selectedImage = null;
+            }
+
+            selectedWord = null;
+        }
+
+        function applyHighlight(element) {
+            element.classList.add('selected');
+        }
+
+        function removeHighlight(element) {
+            element.classList.remove('selected');
+        }
+
+        function checkMatch() {
+            const congratsMessage = document.getElementById('congrats-message');
+
+            if (selectedImage && selectedWord) {
+                if (selectedImage.alt === selectedWord) {
+                    correctMatches++;
+                    applyHighlight(selectedImage);
+                    selectedImage.style.display = 'none';
+                    const matchingWord = document.querySelector(`.word[data-word="${selectedWord}"]`);
+                    matchingWord.style.display = 'none';
+
+                    if (correctMatches === imagesAndWords.length) {
+                        congratsMessage.style.display = 'block';
+                    }
+                } else {
+                    alert('Incorrecto. Intenta de nuevo.');
+                }
+
+                resetSelections();
+            }
+        }
+
+        window.onload = createCards;
+    </script>
+</body>
+</html>
